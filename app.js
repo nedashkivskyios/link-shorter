@@ -37,7 +37,7 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 const swaggerUi = require('swagger-ui-express');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-////////////////
+/////////////////
 
 const corsOptions = {
   credentials: true,
