@@ -1,0 +1,5 @@
+{
+    "port": 8080,
+    "jwtSecret": "Impichment Putin",
+    "mongoUri": "mongodb+srv://dvk:introductio@cluster0.oao3a.mongodb.net/mern?retryWrites=true&w=majority"
+}
