@@ -6,18 +6,18 @@ export type AuthErrorsResponseType = {
     msg: string
     value: string
 }
-type InitialStateType = {
+export type AuthInitialStateType = {
     message: string
     error: null | string
 }
 
-const initialState: InitialStateType = {
+const initialState: AuthInitialStateType = {
     message: '',
     error: null
 }
 
 
-export const authReducer = (state = initialState, action: AuthReducerActionType): InitialStateType => {
+export const authReducer = (state = initialState, action: AuthReducerActionType): AuthInitialStateType => {
     switch (action.type) {
         case "DVK/SET-AUTH-MESSAGE": {
             return {
