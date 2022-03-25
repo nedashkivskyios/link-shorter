@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken')
 const config = require('config')
 const { check, validationResult } = require('express-validator')
 const User = require('../models/User')
-const uuid = require('uuid');
 const router = express.Router()
 
 
@@ -137,7 +136,6 @@ router.post(
       }
       const hashedPass = await bcrypt.hashSync(password, 12)
       const user = new User({
-        userId: uuid.v1(),
         password: hashedPass,
         email, firstName, lastName,
       })
@@ -279,7 +277,7 @@ router.post(
         return res.status(400).json({ message: 'Incorrect password' })
       }
       const token = jwt.sign(
-        { userId: user.userId },
+        { userId: user.id },
         config.get('jwtSecret'),
         { expiresIn: '24h' },
       )
