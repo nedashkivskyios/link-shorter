@@ -4,7 +4,7 @@ export type LoadingStatusType = 'idle' | 'success' | 'failed' | 'loading'
 export type SeverityStatusType = 'success' | 'error' | 'info'
 
 
-const initialState: InitialStateType = {
+const initialState: AppInitialStateType = {
   loading: 'idle',
   error: null,
   severity: 'info',
@@ -14,7 +14,7 @@ const initialState: InitialStateType = {
 }
 
 
-export const appReducer = (state = initialState, action: AppReducerActionType): InitialStateType => {
+export const appReducer = (state = initialState, action: AppReducerActionType): AppInitialStateType => {
   switch (action.type) {
     case "DVK/SET-LOADING": {
       return {
@@ -65,7 +65,7 @@ export const appReducer = (state = initialState, action: AppReducerActionType): 
   }
 }
 
-type InitialStateType = {
+export type AppInitialStateType = {
   loading: LoadingStatusType
   error: null | string
   severity: SeverityStatusType
