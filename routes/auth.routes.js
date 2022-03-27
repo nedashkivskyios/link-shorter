@@ -188,7 +188,7 @@ router.post(
  *                userId:
  *                  type: string
  *                  description: Logged in user ID
- *                  example: Not have an example is uuid string
+ *                  example: Not have an example is MongoDB Types.ObjectID string
  *      422:
  *        summary: Register validation failed.
  *        description: Entered incorrect registration data.
@@ -281,7 +281,7 @@ router.post(
         config.get('jwtSecret'),
         { expiresIn: '24h' },
       )
-      res.status(200).json({ token, userId: user.userId })
+      res.status(200).json({ token, userId: user.id })
 
     } catch (e) {
       res.status(500).json({ message: 'Something error. Server error.', errors: e.message })

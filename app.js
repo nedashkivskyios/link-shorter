@@ -41,20 +41,21 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const corsOptions = {
   credentials: true,
-  origin: 'http://localhost:3000'
+  origin: 'http://localhost:3000',
 }
 
 app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use('/api/auth', require('./routes/auth.routes'))
+app.use('/api/link', require('./routes/link.routes'))
 
 
 const start = async () => {
   try {
     await mongoose.connect(config.get('mongoUri'), {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
     })
     app.listen(PORT, () => console.log(`Server start at port: ${PORT}`))
   } catch (e) {
