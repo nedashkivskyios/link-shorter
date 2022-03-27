@@ -3,6 +3,7 @@ const Link = require('../models/Link')
 const authMiddleware = require('../middleware/auth.middleware')
 const config = require('config')
 const shortId = require('shortid')
+const { check, validationResult } = require('express-validator')
 
 const router = Router()
 
@@ -83,11 +84,11 @@ const router = Router()
  *                      msg:
  *                        type: string
  *                        description: Error text
- *                        example: Incorrect initialUrl
+ *                        example: Field Initial Url must contain a valid url address
  *                      value:
  *                        type: string
  *                        description: False value that came to the server
- *                        example: adsfasdf
+ *                        example: al;sd;fasdf.als;d
  *      401:
  *        summary: Not autorized.
  *        description: Attempt to generate links without login.
@@ -118,8 +119,22 @@ const router = Router()
  *                  example: Some error.
  */
 
-router.post('/generate', authMiddleware, async (req, res) => {
+router.post(
+  '/generate',
+  authMiddleware,
+  [
+    check('initialUrl', 'Field Initial Url must exist').exists(),
+    check('initialUrl', 'Field Initial Url must contain a valid url address').isURL()
+  ],
+  async (req, res) => {
   try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        message: 'Incorrect data.',
+        errors: errors.array(),
+      })
+    }
     const baseUrl = config.get('baseUrl')
     const {initialUrl} = req.body
     const code = shortId.generate()
