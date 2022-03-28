@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 
 const instance = axios.create({
   baseURL: 'http://localhost:8080/api/auth/',
@@ -11,6 +11,9 @@ export const authAPI = {
   },
   login: (payload: LoginRequestType) => {
     return instance.post('login', payload)
+  },
+  check: (params: {token: string, userId: string}) => {
+    return instance.post('check', {token: params.token, userId: params.userId})
   },
 }
 

@@ -124,34 +124,34 @@ router.post(
   authMiddleware,
   [
     check('initialUrl', 'Field Initial Url must exist').exists(),
-    check('initialUrl', 'Field Initial Url must contain a valid url address').isURL()
+    check('initialUrl', 'Field Initial Url must contain a valid url address').isURL(),
   ],
   async (req, res) => {
-  try {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(422).json({
-        message: 'Incorrect data.',
-        errors: errors.array(),
+    try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(422).json({
+          message: 'Incorrect data.',
+          errors: errors.array(),
+        })
+      }
+      const baseUrl = config.get('baseUrl')
+      const { initialUrl } = req.body
+      const code = shortId.generate()
+
+      const shortUrl = `${baseUrl}/t/${code}`
+
+      const link = new Link({
+        initialUrl, code, shortUrl, owner: req.user.userId,
       })
+
+      await link.save()
+      res.status(201).json(link)
+
+    } catch (e) {
+      res.status(500).json({ message: 'Server error.', errors: e.message })
     }
-    const baseUrl = config.get('baseUrl')
-    const {initialUrl} = req.body
-    const code = shortId.generate()
-
-    const shortUrl = `${baseUrl}/t/${code}`
-
-    const link = new Link({
-      initialUrl, code, shortUrl, owner: req.user.userId
-    })
-
-    await link.save()
-    res.status(201).json(link)
-
-  } catch (e) {
-    res.status(500).json({ message: 'Server error.', errors: e.message })
-  }
-})
+  })
 
 /**
  * @swagger
@@ -223,7 +223,7 @@ router.post(
  */
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const links = await Link.find({owner: req.user.userId})
+    const links = await Link.find({ owner: req.user.userId })
     res.status(200).json({ links })
   } catch (e) {
     res.status(500).json({ message: 'Server error.', errors: e.message })
@@ -321,7 +321,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
   try {
     const link = await Link.findById(req.params.id)
     if (!link) {
-      return res.status(400).json({message: `Can't find shorted URL`})
+      return res.status(400).json({ message: `Can't find shorted URL` })
     }
     res.status(200).json({ link })
   } catch (e) {

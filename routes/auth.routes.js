@@ -5,6 +5,7 @@ const config = require('config')
 const { check, validationResult } = require('express-validator')
 const User = require('../models/User')
 const router = express.Router()
+const uuid = require('uuid')
 
 
 /**
@@ -136,6 +137,7 @@ router.post(
       }
       const hashedPass = await bcrypt.hashSync(password, 12)
       const user = new User({
+        userId: uuid.v1(),
         password: hashedPass,
         email, firstName, lastName,
       })
@@ -287,6 +289,97 @@ router.post(
       res.status(500).json({ message: 'Something error. Server error.', errors: e.message })
     }
   })
+
+
+/**
+ * @swagger
+ * /api/auth/check:
+ *  post:
+ *    summary: Validation token regenerate.
+ *    description: Request to check the validity of the authorization token.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              token:
+ *                type: string
+ *                require: true
+ *                description: Unique user validation token.
+ *                example: Not have an example is jwt string token
+ *              userId:
+ *                type: string
+ *                require: true
+ *                description: The identity of the user to whom the token belongs.
+ *                example: Not have an example is MongoDB Types.ObjectID string
+ *    responses:
+ *      200:
+ *        summary: User Signing in App.
+ *        description: Request successful, user sign in.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                token:
+ *                  type: string
+ *                  description: Response session token.
+ *                  example: Not have an example is jwt string token
+ *                userId:
+ *                  type: string
+ *                  description: Logged in user ID
+ *                  example: Not have an example is MongoDB Types.ObjectID string
+ *      401:
+ *        summary: Not autorized.
+ *        description: Token expires.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  description: Autorization token expire
+ *                  example: You need to log in.
+ *      500:
+ *        summary: Server error
+ *        description: Some server error occered.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  description: HardCode error text
+ *                  example: Something error. Server error.
+ *                errors:
+ *                  type: string
+ *                  description: Specific response from the server.
+ *                  example: Some error.
+ */
+router.post('/check', async (req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next()
+  }
+  try {
+    const { token, userId } = req.body
+    const user = await User.findOne({ id: userId })
+    if (!token) {
+      return res.status(401).json({ message: 'You need to log in.' })
+    }
+    const newToken = jwt.sign(
+      { userId: user.id },
+      config.get('jwtSecret'),
+      { expiresIn: '24h' },
+    )
+    res.status(200).json({ token: newToken, userId: user.id })
+  } catch (e) {
+    res.status(500).json({ message: 'Something error. Server error.', errors: e.message })
+  }
+})
 
 
 module.exports = router

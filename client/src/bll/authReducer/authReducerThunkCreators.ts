@@ -5,7 +5,8 @@ import {
   setIsOpenSnackbarStatusAC,
   setLoadingAC,
   setSeverityAC,
-  setTokenAC, setUserId,
+  setTokenAC,
+  setUserId,
 } from "../appReducer/appReducerActionCreators";
 import {setAuthErrorsAC, setAuthMessageAC} from "./authReducerActionCreators";
 
