@@ -1,52 +1,43 @@
-import * as React from 'react';
-import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
-import Box from "@mui/material/Box";
+import * as React from "react";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 const columns: GridColDef[] = [
-  {field: 'id', headerName: 'ID', width: 70},
-  {field: 'firstName', headerName: 'First name', width: 130},
-  {field: 'lastName', headerName: 'Last name', width: 130},
+  { field: "id", headerName: "N", width: 50, sortable: false },
   {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
+    field: "initialUrl",
+    headerName: "Initial Link",
+    width: 750,
     sortable: false,
-    width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+  },
+  { field: "shortUrl", headerName: "Shorted Url", width: 500, sortable: false },
+  {
+    field: "clicks",
+    headerName: "Cliks",
+    type: "number",
+    width: 50,
+    sortable: false,
   },
 ];
 
 const rows = [
-  {id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-  {id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42},
-  {id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45},
-  {id: 4, lastName: 'Stark', firstName: 'Arya', age: 16},
-  {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null},
-  {id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-  {id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-  {id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42},
-  {id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45},
-  {id: 4, lastName: 'Stark', firstName: 'Arya', age: 16},
-  {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null},
+  {
+    id: 1,
+    initialUrl: "Snoasdkfahsdkfhalskdfjhaslkdjfhalksdjfhw",
+    shortUrl: "Joalsdjfhkalsjdhflkasjdhflkasjdhfalksjdhfn",
+    clicks: 0,
+  },
 ];
 
 export const LinksTable = () => {
   return (
-    <Box component={'div'} style={{ width: '100%'}} sx={{flexGrow: 1, height: '85vh'}}>
+    <div style={{ height: 500, width: "100%" }}>
       <DataGrid
-        pagination={true}
+        pagination={undefined}
         rows={rows}
         columns={columns}
-        pageSize={10}
-        // rowsPerPageOptions={[5, 10,15,20,25]}
+        // pageSize={5}
+        rowsPerPageOptions={[0]}
       />
-    </Box>
+    </div>
   );
-}
+};

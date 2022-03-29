@@ -1,9 +1,5 @@
-import React from 'react';
+import React from "react";
 
 export const DetailPage = () => {
-    return (
-        <div>
-            DetailPage
-        </div>
-    );
+  return <div>DetailPage</div>;
 };

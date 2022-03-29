@@ -1,11 +1,11 @@
-const { Router } = require('express')
-const Link = require('../models/Link')
-const authMiddleware = require('../middleware/auth.middleware')
-const config = require('config')
-const shortId = require('shortid')
-const { check, validationResult } = require('express-validator')
+const { Router } = require("express");
+const Link = require("../models/Link");
+const authMiddleware = require("../middleware/auth.middleware");
+const config = require("config");
+const shortId = require("shortid");
+const { check, validationResult } = require("express-validator");
 
-const router = Router()
+const router = Router();
 
 /**
  * @swagger
@@ -120,38 +120,44 @@ const router = Router()
  */
 
 router.post(
-  '/generate',
+  "/generate",
   authMiddleware,
   [
-    check('initialUrl', 'Field Initial Url must exist').exists(),
-    check('initialUrl', 'Field Initial Url must contain a valid url address').isURL(),
+    check("initialUrl", "Field Initial Url must exist").exists(),
+    check(
+      "initialUrl",
+      "Field Initial Url must contain a valid url address"
+    ).isURL(),
   ],
   async (req, res) => {
     try {
-      const errors = validationResult(req)
+      const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(422).json({
-          message: 'Incorrect data.',
+          message: "Incorrect data.",
           errors: errors.array(),
-        })
+        });
       }
-      const baseUrl = config.get('baseUrl')
-      const { initialUrl } = req.body
-      const code = shortId.generate()
+      const baseUrl = config.get("baseUrl");
+      const { initialUrl } = req.body;
+      const code = shortId.generate();
 
-      const shortUrl = `${baseUrl}/t/${code}`
+      const shortUrl = `${baseUrl}/t/${code}`;
 
       const link = new Link({
-        initialUrl, code, shortUrl, owner: req.user.userId,
-      })
+        initialUrl,
+        code,
+        shortUrl,
+        owner: req.user.userId,
+      });
 
-      await link.save()
-      res.status(201).json(link)
-
+      await link.save();
+      res.status(201).json(link);
     } catch (e) {
-      res.status(500).json({ message: 'Server error.', errors: e.message })
+      res.status(500).json({ message: "Server error.", errors: e.message });
     }
-  })
+  }
+);
 
 /**
  * @swagger
@@ -221,14 +227,14 @@ router.post(
  *                  description: Specific response from the server.
  *                  example: Some error.
  */
-router.get('/', authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const links = await Link.find({ owner: req.user.userId })
-    res.status(200).json({ links })
+    const links = await Link.find({ owner: req.user.userId });
+    res.status(200).json({ links });
   } catch (e) {
-    res.status(500).json({ message: 'Server error.', errors: e.message })
+    res.status(500).json({ message: "Server error.", errors: e.message });
   }
-})
+});
 
 /**
  * @swagger
@@ -317,17 +323,16 @@ router.get('/', authMiddleware, async (req, res) => {
  *                  example: Some error.
  */
 
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get("/:id", authMiddleware, async (req, res) => {
   try {
-    const link = await Link.findById(req.params.id)
+    const link = await Link.findById(req.params.id);
     if (!link) {
-      return res.status(400).json({ message: `Can't find shorted URL` })
+      return res.status(400).json({ message: `Can't find shorted URL` });
     }
-    res.status(200).json({ link })
+    res.status(200).json({ link });
   } catch (e) {
-    res.status(500).json({ message: 'Server error.', errors: e.message })
+    res.status(500).json({ message: "Server error.", errors: e.message });
   }
-})
+});
 
-
-module.exports = router
+module.exports = router;
