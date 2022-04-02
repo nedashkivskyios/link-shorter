@@ -5,16 +5,24 @@ import { DetailPage } from "../components/DetailPage";
 import { AuthPage } from "../components/AuthPage";
 import { RegisterPage } from "../components/RegisterPage";
 import Spotify from "../components/Spotify/Spotify";
+import {useSelector} from "react-redux";
+import {NavBar} from "../components/NavBar";
+import {RootStateType} from "../bll/store";
 
-export const useRouter = (isAutenticate: boolean) => {
-  if (isAutenticate) {
+export const MainRouter = () => {
+  const token = useSelector<RootStateType, string>((state) => state.app.token);
+
+  if (!!token) {
     return (
-      <Routes>
-        <Route path={"/links"} element={<LinksPage />} />
-        <Route path={"/detail/:id"} element={<DetailPage />} />
-        <Route path={"*"} element={<Navigate to={"links"} />} />
-        <Route path={"spotify"} element={<Spotify />} />
-      </Routes>
+      <>
+        <NavBar />
+        <Routes>
+          <Route path={"/links"} element={<LinksPage />} />
+          <Route path={"/detail/:id"} element={<DetailPage />} />
+          <Route path={"*"} element={<Navigate to={"links"} />} />
+          <Route path={"spotify"} element={<Spotify />} />
+        </Routes>
+      </>
     );
   }
   return (
